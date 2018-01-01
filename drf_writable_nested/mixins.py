@@ -2,6 +2,7 @@
 import uuid
 from collections import OrderedDict, defaultdict
 
+from django.db import transaction
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import ProtectedError, FieldDoesNotExist
@@ -195,6 +196,7 @@ class NestedCreateMixin(BaseNestedModelSerializer):
     """
     Mixin adds nested create feature
     """
+    @transaction.atomic
     def create(self, validated_data):
         relations, reverse_relations = self._extract_relations(validated_data)
 
@@ -222,6 +224,7 @@ class NestedUpdateMixin(BaseNestedModelSerializer):
             "protected relation exists")
     }
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         relations, reverse_relations = self._extract_relations(validated_data)
 
